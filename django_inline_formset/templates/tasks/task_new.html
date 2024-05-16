@@ -1,0 +1,134 @@
+{% extends "base_2.html" %}
+{% block content %}
+
+
+
+
+
+
+
+<div class="card">
+<form id="add_item_form" action="{% url 'products:add_item' task_id %}" method="post">
+{% csrf_token %}
+    <div class="col">
+        {% for item, condition in cells.items %}
+        <div class="input-group mb-1">
+            <textarea name="Text1" cols="40" rows="2" class="form-control"></textarea>
+            <!--<input type="text" name="items-{{item.id}}-name" value="{{ item.name }}" class="form-control" placeholder=""/>-->
+            {% for condition, cell in condition.items %}
+                <input type="number" name="cells-{{ cell.id }}-value" class="form-control" step="0.001" value="{{cell.value}}"/>
+            {% endfor %}
+            <a href="{% url 'products:delete_item' item.id %}" type="button" class="btn btn-danger" style="width:15%">Удалить</a>
+        </div>
+        {% endfor %}
+        <div class="input-group mb-1">
+            <textarea name="Text1" cols="40" rows="2" class="form-control"></textarea>
+            <!--<input type="text" name="items-NONE-name" value="" class="form-control" placeholder="Элемент"/>-->
+            {% for condition in conditions %}
+                <input type="number" name="cells-NONE-value" class="form-control" value="0.0"/>
+            {% endfor %}
+            <a href="#" id="add-item-button" type="button" class="add-items btn btn-success" style="width:15%">Add</a>
+        </div>
+        </div>
+    </div>
+        <!--<a href="{% url 'products:add_item' task_id %}" type="button" class="btn btn-info" style="width:15%">Добавить</a>-->
+        <button name="submit-add-item" type="submit" class="btn btn-warning" style="width:15%">Добавить</button>
+
+</form>
+</div>
+<form id="execute_form" action="{% url 'products:execute' task_id %}" method="post">
+    {% csrf_token %}
+    <div class="row">
+        <div class="col">
+            <div class="card shadow rounded">
+                <div class="card-header">
+                    <div class="row">
+                        <div class="clearfix">
+                            <input type="hidden" name="user" value="3" id="id_user">
+                            <button name="submit-execute" type="submit" class="btn btn-primary float-end">Рассчитать</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group card-body">
+                    <div class="row">
+                        <div class="col-4">
+                            {% for condition in conditions %}
+                            <div class="input-group mb-1">
+                                <textarea name="Text1" cols="40" rows="2" class="form-control"></textarea>
+                                <!--<input type="text" name="conditions-{{ condition.id }}-name" class="form-control" {% if condition.name == "" %} placeholder="Условие" {%  endif %} value="{{ condition.name }}"/>-->
+                                <input type="number" name="conditions-{{ condition.id }}-value" class="form-control" placeholder="Вес" step="0.01" min="0" max="1" value="{{ condition.value }}"/>
+                                <a href="{% url 'products:delete_condition' condition.id %}" type="button" class="btn btn-danger" style="width:30%">Удалить</a>
+                            </div>
+                            {% endfor %}
+                            <div class="input-group mb-1">
+                                <textarea name="Text1" cols="40" rows="2" class="form-control"></textarea>
+                                <!--<input type="text" name="conditions-NONE-name" class="form-control" placeholder="Критерий" value=""/>-->
+                                <input type="number" name="conditions-NONE-value" class="form-control" placeholder="Вероятность" step="0.01" value="0"/>
+                                <!--<a href="{% url 'products:add_condition' task_id %}" type="button" class="btn btn-info" style="width:30%">Добавить</a>-->
+                                <button name="submit-add-condition" type="submit" class="btn btn-warning" style="width:30%">Добавить</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            {% if task_result.items %}
+                            <div class="card shadow rounded">
+                                <div class="card-header">
+                                    <div class="row">
+                                        <div class="col-12">Результат</div>
+                                    </div>
+                                </div>
+                                <table class="table table-hover">
+                                    <thead>
+                                    </thead>
+                                    <tbody>
+                                    {% for criteria_name, item_name in task_result.items %}
+                                    <tr>
+                                        <td>{{ criteria_name }}</td>
+                                        <td>{{ item_name }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+</div>
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
+<script>
+$(document).ready(function () {
+    $('.add-conditions').click(function (ev) {
+        ev.preventDefault();
+        var count = $('#item-conditions').children().length;
+        var tmplMarkup = $('#conditions-template').html();
+        var compiledTmpl = tmplMarkup.replace(/__prefix__/g, count);
+        $('#item-conditions').append(compiledTmpl);
+        $('#id_conditions-TOTAL_FORMS').attr('value', count + 1);
+    });
+});
+$(document).ready(function () {
+    $('.add-items').click(function (ev) {
+        ev.preventDefault();
+        var count = $('#item-items').children().length;
+        var tmplMarkup = $('#items-template').html();
+        var compiledTmpl = tmplMarkup.replace(/__prefix__/g, count);
+        $('#item-items').append(compiledTmpl);
+        $('#id_items-TOTAL_FORMS').attr('value', count + 1);
+    });
+});
+</script>
+<style>
+.anch {
+    text-align:center;
+    vertical-align:center;
+}
+</style>
+{% endblock content %}

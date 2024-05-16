@@ -1,0 +1,30 @@
+{% extends "main.html" %}
+{% block content %}
+<div class="row mb-3">
+    <div class="col">
+        <div class="row">
+            <div class="col-8">
+                {% for item in items %}
+                <form id="form_delete_item" action="{% url 'products:update_item' item.id %}" method="post">
+                    {% csrf_token %}
+                    <div class="input-group">
+                        <textarea id="item_{{ item.id }}_name" name="object-item-{{ item.id }}-name" cols="40" rows="2" class="form-control" placeholder="Введите вариант" style="width:10%" onchange="UpdateData(this)">{{ item.name }}</textarea>
+                        <button id="button_execute_{{ item.id }}" name="submit-delete-item" type="submit" class="btn btn-outline-danger" style="width:15%">Удалить</button>
+                    </div>
+                </form>
+                {% endfor %}
+                {% if can_add_items %}
+                <form id="form_add_item" action="{% url 'products:add_item' task_id %}" method="post">
+                    {% csrf_token %}
+                    <div class="input-group">
+                        <textarea name="item-NONE-name" cols="40" rows="2" class="form-control" placeholder="Введите вариант" style="width:10%"></textarea>
+                        <button name="submit-add-item" type="submit" class="btn btn-outline-success" style="width:15%">Добавить</button>
+                    </div>
+                </form>
+                {% endif %}
+                <a href="{% url 'products:task' task_id %}" type="button" class="btn btn-outline-primary">Назад</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

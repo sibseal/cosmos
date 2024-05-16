@@ -1,0 +1,256 @@
+<!-- product_create_or_update.html -->
+
+{% extends "base_2.html" %}
+
+{% block content %}
+<form enctype="multipart/form-data" class="container" method="post" id="product_form">
+    {% csrf_token %}
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <div class="card">
+                    <div class="card-header card-header-secondary">
+                        <h5 class="card-title">Задача</h5>
+                    </div>
+                    {% for field in form %}
+                    <div class="form-group card-body">
+                        <!--                        <label>{{field.label}}</label>-->
+                        {% if field.field.required %}
+                        {% endif %}
+                        {{field}}
+                        {% if field.help_text %}
+                        <small style="color: grey">{{ field.help_text }}</small>
+                        {% endif %}
+                        {% for error in field.errors %}
+                        <p style="color: red">{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                {% with named_formsets.items as formset %}
+                {{ formset.management_form }}
+                <script type="text/html" id="items-template">
+                    <tr id="items-__prefix__" class=hide_all>
+                        {% for fields in formset.empty_form.hidden_fields %}
+                        {{ fields }}
+                        {% endfor %}
+                        {% for fields in formset.empty_form.visible_fields %}
+                        <td>{{fields}}</td>
+                        {% endfor %}
+                    </tr>
+                </script>
+                <div class="table-responsive card mt-4">
+                    <div class="card-header card-header-secondary">
+                        <h5 class="card-title">Решения</h5>
+                    </div>
+                    <table class="table card-header">
+                        <thead class="text-secondary">
+                        <th>Наименование</th>
+                        <th></th>
+                        </thead>
+                        <tbody id="item-items">
+                        {% for error in formset.non_form_errors %}
+                        <span style="color: red">{{ error }}</span>
+                        {% endfor %}
+                        {% for formss in formset %}
+                        {{ formss.management_form }}
+                        <tr id="items-{{ forloop.counter0 }}" class=hide_all>
+                            {{ formss.id }}
+                            {% for field in formss.visible_fields %}
+                            <td>
+                                {{field}}
+                                {% for error in field.errors %}
+                                <span style="color: red">{{ error }}</span>
+                                {% endfor %}
+                                {% comment %} {{ field.DELETE }} {% endcomment %}
+                            </td>
+                            {% endfor %}
+                            {% comment %} for delete {% endcomment %}
+                            {% if formss.instance.pk %}
+                            <td>
+                                <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#exampleModal{{formss.instance.pk}}">
+                                    Удалить
+                                </button>
+                                <div class="modal fade" id="exampleModal{{formss.instance.pk}}" tabindex="-1" role="dialog"
+                                     aria-labelledby="exampleModalLabel{{formss.instance.pk}}" aria-hidden="true">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="exampleModalLabel{{formss.instance.pk}}">Удалить объект для
+                                                    расчёта?</h5>
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <a href="{% url 'products:delete_item' formss.instance.pk %}" type="button"
+                                                   class="btn btn-primary">Да, удалить</a>
+                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Отмена</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                            {% endif %}
+                        </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                    <!--                    <a href="#" id="add-item-button" class="btn btn-success add-items">Добавить</a>-->
+                    <div class="row">
+                        <button type="submit" class="btn btn-info">Сохранить</button>
+                    </div>
+
+                </div>
+                {% endwith %}
+            </div>
+            <div class="col">
+                {% with named_formsets.conditions as formset %}
+                {{ formset.management_form }}
+                <script type="text/html" id="conditions-template">
+                    <tr id="conditions-__prefix__" class=hide_all>
+                        {% for fields in formset.empty_form.hidden_fields %}
+                        {{ fields }}
+                        {% endfor %}
+                        {% for fields in formset.empty_form.visible_fields %}
+                        <td>{{fields}}</td>
+                        {% endfor %}
+                    </tr>
+                </script>
+                <div class="table-responsive card mt-4">
+                    <div class="card-header card-header-secondary">
+                        <h5 class="card-title">Внешние условия</h5>
+                    </div>
+                    <table class="table card-header">
+                        <thead class="text-secondary">
+                        <th>Условие</th>
+                        <th>Вероятность</th>
+                        <th></th>
+                        </thead>
+                        <tbody id="item-conditions">
+                        {% for error in formset.non_form_errors %}
+                        <span style="color: red">{{ error }}</span>
+                        {% endfor %}
+                        {% for formss in formset %}
+                        {{ formss.management_form }}
+                        <tr id="conditions-{{ forloop.counter0 }}" class=hide_all>
+                            {{ formss.id }}
+                            {% for field in formss.visible_fields %}
+                            <td>
+                                {{field}}
+                                {% for error in field.errors %}
+                                <span style="color: red">{{ error }}</span>
+                                {% endfor %}
+                                {% comment %} {{ field.DELETE }} {% endcomment %}
+                            </td>
+                            {% endfor %}
+                            {% comment %} for delete {% endcomment %}
+                            {% if formss.instance.pk %}
+                            <td>
+                                <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#exampleModal{{formss.instance.pk}}">
+                                    Удалить
+                                </button>
+                                <div class="modal fade" id="exampleModal{{formss.instance.pk}}" tabindex="-1" role="dialog"
+                                     aria-labelledby="exampleModalLabel{{formss.instance.pk}}" aria-hidden="true">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="exampleModalLabel{{formss.instance.pk}}">Удалить объект для
+                                                    расчёта?</h5>
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <a href="{% url 'products:delete_condition' formss.instance.pk %}" type="button"
+                                                   class="btn btn-primary">Да, удалить</a>
+                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Отмена</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                            {% endif %}
+                        </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                    <!--                    <a href="#" id="add-condition-button" class="btn btn-success add-conditions">Добавить</a>-->
+                    <!--                    <a href="{% url 'products:update_task' task_id %}" id="add-condition-button" class="btn btn-success add-conditions1">Добавить1</a>-->
+                    <button type="submit" class="btn btn-info">Сохранить</button>
+                </div>
+                {% endwith %}
+            </div>
+        </div>
+        <br/>
+        <!--        <div class="row">-->
+        <!--            <button type="submit" class="btn btn-info">Сохранить</button>-->
+        <!--        </div>-->
+    </div>
+</form>
+<form action="{% url 'products:execute' task_id %}" method="post">
+    {% csrf_token %}
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <div class="card">
+                    <div class="card-header card-header-secondary">
+                        <h5 class="card-title">Значения</h5>
+                    </div>
+                    <div class="form-group card-body">
+                        <table>
+                            <tr>
+                                <td></td>
+                                {% for condition in conditions %}
+                                <th>{{ condition }} {{ condition.value }}</th>
+                                {% endfor %}
+                            </tr>
+                            {% for item in items %}
+                            <tr>
+                                <th>{{ item }}</th>
+                                {% for condition in conditions %}
+                                <td>
+                                    <input type="number" name="item:{{ item.id }}:condition:{{ condition.id }}" class="form-control" value="0"/>
+                                </td>
+                                {% endfor %}
+                            </tr>
+                            {% endfor %}
+                        </table>
+                        <input type="submit" value="Рассчитать"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+<script>
+    $(document).ready(function () {
+        $('.add-conditions').click(function (ev) {
+            ev.preventDefault();
+            var count = $('#item-conditions').children().length;
+            var tmplMarkup = $('#conditions-template').html();
+            var compiledTmpl = tmplMarkup.replace(/__prefix__/g, count);
+            $('#item-conditions').append(compiledTmpl);
+            $('#id_conditions-TOTAL_FORMS').attr('value', count + 1);
+        });
+    });
+    $(document).ready(function () {
+        $('.add-items').click(function (ev) {
+            ev.preventDefault();
+            var count = $('#item-items').children().length;
+            var tmplMarkup = $('#items-template').html();
+            var compiledTmpl = tmplMarkup.replace(/__prefix__/g, count);
+            $('#item-items').append(compiledTmpl);
+            $('#id_items-TOTAL_FORMS').attr('value', count + 1);
+        });
+    });
+</script>
+
+{% endblock content %}

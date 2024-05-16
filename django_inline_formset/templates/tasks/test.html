@@ -1,0 +1,19 @@
+<table class="table table-hover">
+    {% for key, value in schedule_array.items %}
+    <tr class="info">
+        <td><h3>{{ value.course }}</h3></td>
+    </tr>
+    <tr>
+        <td>
+            {% for s in value.students %}
+            k2: {{s}}
+            {% endfor %}
+        </td>
+        <td>
+            {% for t in value.teachers %}
+            k2: {{t}}
+            {% endfor %}
+        </td>
+    </tr>
+    {% endfor %}
+</table>

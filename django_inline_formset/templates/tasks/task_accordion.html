@@ -1,0 +1,182 @@
+{% extends "base_2.html" %}
+{% block content %}
+<div class="container">
+    <div class="accordion" id="accordionPanelsStayOpenExample">
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="panelsStayOpen-headingOne">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseTwo" aria-expanded="false" aria-controls="panelsStayOpen-collapseTwo">
+                    FORMSET
+                </button>
+            </h2>
+            <div id="panelsStayOpen-collapseTwo" class="accordion-collapse collapse show" aria-labelledby="panelsStayOpen-headingTwo">
+                <div class="accordion-body">
+                    <form id="product_form" enctype="multipart/form-data" class="container" method="post">
+                        {% csrf_token %}
+                        <div class="container">
+                            <div class="col">
+                                <div class="card">
+                                    <div class="card-header card-header-secondary">
+                                        <div class="row">
+                                            <div class="col">
+                                                {% for field in form %}
+                                                {% if field.field.required %}
+                                                <h5 class="card-title">{{field}}</h5>
+                                                {% endif %}
+                                                {% if field.help_text %}
+                                                <small style="color: grey">{{ field.help_text }}</small>
+                                                {% endif %}
+                                                {% for error in field.errors %}
+                                                <p style="color: red">{{ error }}</p>
+                                                {% endfor %}
+                                                {% endfor %}
+                                            </div>
+                                            <div class="col">
+                                                <button type="submit" class="btn btn-info">Сохранить</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col">
+                                            {% with named_formsets.items as formset %}
+                                            {{ formset.management_form }}
+                                            <script type="text/html" id="items-template">
+                                                <div id="items-__prefix__" class=hide_all>
+                                                    <div class="input-group mt-1">
+                                                        <!--                                                                    {% for fields in formset.empty_form.hidden_fields %}-->
+                                                        <!--                                                                        {{ fields }}-->
+                                                        <!--                                                                    {% endfor %}-->
+                                                        {% for fields in formset.empty_form.visible_fields %}
+                                                        {{fields}}
+                                                        {% endfor %}
+                                                        <a href="#" type="button" class="btn btn-danger anch">Удалить</a>
+                                                    </div>
+                                                </div>
+                                            </script>
+                                            <div class="table-responsive card">
+                                                <div class="card-header card-header-secondary">
+                                                    <h5 class="card-title">Варианты</h5>
+                                                </div>
+                                                <div id="item-items">
+                                                    {% for error in formset.non_form_errors %}
+                                                    <div class="alert alert-danger mt-1" role="alert">{{ error }}</div>
+                                                    {% endfor %}
+                                                    {% for formss in formset %}
+                                                    {{ formss.management_form }}
+                                                    <div id="items-{{ forloop.counter0 }}" class=hide_all>
+                                                        {{ formss.id }}
+                                                        <div class="input-group mt-1">
+                                                            {% for field in formss.visible_fields %}
+                                                            {{field}}
+                                                            {% for error in field.errors %}
+                                                            <span style="color: red">{{ error }}</span>
+                                                            {% endfor %}
+                                                            {% comment %} {{ field.DELETE }} {% endcomment %}
+                                                            {% endfor %}
+                                                            {% if formss.instance.pk %}
+                                                            <a href="{% url 'products:delete_item' formss.instance.pk %}" type="button" class="btn btn-danger anch">Удалить</a>
+                                                            {% endif %}
+                                                        </div>
+                                                        {% comment %} for delete {% endcomment %}
+                                                        {% if formss.instance.pk %} {% endif %}
+                                                    </div>
+                                                    {% endfor %}
+                                                </div>
+                                                <a href="#" id="add-item-button" class="btn btn-success add-items mt-1">Добавить</a>
+                                            </div>
+                                            {% endwith %}
+                                        </div>
+
+                                        <div class="col">
+                                            {% with named_formsets.conditions as formset %}
+                                            {{ formset.management_form }}
+                                            <script type="text/html" id="conditions-template">
+                                                <div id="conditions-__prefix__" class=hide_all>
+                                                    <div class="input-group mt-1">
+                                                        <!--                                                                {% for fields in formset.empty_form.hidden_fields %}-->
+                                                        <!--                                                                    {{ fields }}-->
+                                                        <!--                                                                {% endfor %}-->
+                                                        {% for fields in formset.empty_form.visible_fields %}
+                                                        {{fields}}
+                                                        {% endfor %}
+                                                        <a href="#" type="button" class="btn btn-danger anch">Удалить</a>
+                                                    </div>
+                                                </div>
+                                            </script>
+                                            <div class="table-responsive card">
+                                                <div class="card-header card-header-secondary">
+                                                    <h5 class="card-title">Критерии</h5>
+                                                </div>
+                                                <div id="item-conditions">
+                                                    {% for error in formset.non_form_errors %}
+                                                    <div class="alert alert-danger mt-1" role="alert">{{ error }}</div>
+                                                    {% endfor %}
+                                                    {% for formss in formset %}
+                                                    {{ formss.management_form }}
+                                                    <div id="conditions-{{ forloop.counter0 }}" class=hide_all>
+                                                        {{ formss.id }}
+                                                        <div class="input-group mt-1">
+                                                            {% for field in formss.visible_fields %}
+                                                            {{field}}
+                                                            {% for error in field.errors %}
+                                                            <span style="color: red">{{ error }}</span>
+                                                            {% endfor %}
+                                                            {% comment %} {{ field.DELETE }} {% endcomment %}
+                                                            {% endfor %}
+                                                            {% if formss.instance.pk %}
+                                                            <a href="{% url 'products:delete_condition' formss.instance.pk %}" type="button" class="btn btn-danger anch">Удалить</a>
+                                                            {% endif %}
+                                                        </div>
+                                                        {% comment %} for delete {% endcomment %}
+                                                        {% if formss.instance.pk %}{% endif %}
+                                                    </div>
+                                                    {% endfor %}
+                                                </div>
+                                                <a href="#" id="add-condition-button" class="btn btn-success add-conditions mt-1">Добавить</a>
+                                            </div>
+                                            {% endwith %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <br/>
+        </div>
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="panelsStayOpen-headingTwo">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true" aria-controls="panelsStayOpen-collapseOne">
+                    Критерии
+                </button>
+            </h2>
+            <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-headingOne">
+                <div class="accordion-body">
+                    <div class="row">
+                        <div class="col">
+                            {% for condition in conditions %}
+                            <div class="input-group mb-1">
+                                <textarea name="Text1" cols="10" rows="2" class="form-control" style="width:30%"></textarea>
+                                <!--                                    <input type="text" name="conditions-{{ condition.id }}-name" class="form-control" {% if condition.name == "" %} placeholder="Условие" {%  endif %} value="{{ condition.name }}"/>-->
+                                <input type="number" name="conditions-{{ condition.id }}-value" class="form-control" placeholder="Вес" step="0.01" min="0" max="1" value="{{ condition.value }}" style="width:5%"/>
+                                <a href="{% url 'products:delete_condition' condition.id %}" type="button" class="btn btn-danger" style="width:20%">Удалить</a>
+                            </div>
+                            {% endfor %}
+                            <form id="form_add_condition" action="{% url 'products:add_condition' task_id %}" method="post">
+                                {% csrf_token %}
+                                <div class="input-group mb-1">
+                                    <textarea name="Text1" cols="10" rows="1" class="form-control"></textarea>
+                                    <!--                                    <input type="text" name="conditions-NONE-name" class="form-control" placeholder="Критерий" value=""/>-->
+                                    <input type="number" name="conditions-NONE-value" class="form-control" placeholder="Вероятность" step="0.01" value="0"/>
+                                    <button name="submit-add-condition" type="submit" class="btn btn-success" style="width:20%">Добавить</button>
+                                    <!--                                    <a href="{% url 'products:add_condition' task_id %}" type="button" class="btn btn-info" style="width:30%">Добавить</a>-->
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

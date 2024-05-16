@@ -1,0 +1,11 @@
+{% extends "base_2.html" %}
+
+{% block content %}
+<div class="list-group">
+    {% for task in tasks %}
+    <a href="{% url 'products:update_task' task.id %}" class="list-group-item list-group-item-action">{{ task.name }}</a>
+    {% endfor %}
+</div>
+{% endblock content %}
+
+

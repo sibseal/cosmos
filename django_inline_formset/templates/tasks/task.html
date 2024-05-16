@@ -1,0 +1,185 @@
+{% extends "main.html" %}
+{% block content %}
+
+<!--{% for method in task.methods.all %}{{ method.name }}{% endfor %}-->
+<!--{% if forloop.first %} active{% endif %}-->
+
+{% for method in task.methods.all %}
+    {% for aux_param in method.aux_params.all %}
+        {{ aux_param.name }} {{ aux_param.description }}
+    {% endfor %}
+{% endfor %}
+
+<a href="{% url 'products:add_criteria' task_id %}" type="button" class="btn btn-outline-info float-end">Изменить критерии</a>
+<a href="{% url 'products:add_items' task_id %}" type="button" class="btn btn-outline-info float-end">Изменить варианты</a>
+
+<div class="row mb-3">
+    <div class="col">
+        <div class="row">
+            <div class="col-4">
+                {% if error_criteria_value_sum %}
+                {{ error_criteria_value_sum }}
+                {% endif %}
+                {% for criterion in criteria %}
+                <form id="form_delete_criterion" action="{% url 'products:update_criterion' criterion.id %}" method="post">
+                    {% csrf_token %}
+                    <div class="input-group">
+                        <textarea id="criterion_{{ criterion.id }}_name" name="object-criterion-{{ criterion.id }}-name" cols="40" rows="2" class="form-control" placeholder="Введите критерий" onchange="UpdateData(this)">{{ criterion.name }}</textarea>
+                        <input id="criterion_{{ criterion.id }}_value" type="number" name="object-criterion-{{ criterion.id }}-value" class="form-control {% if error_criteria_value_sum %}is-invalid{% endif %}" placeholder="Вес" step="0.01" min="0.0" max="1.0"
+                               value="{{ criterion.value }}"
+                               onchange="UpdateData(this)"/>
+                        <button id="button_execute_{{ criterion.id }}" name="submit-delete-criterion" type="submit" class="btn btn-outline-danger" style="width:30%">Удалить</button>
+                    </div>
+                </form>
+                {% endfor %}
+                {% if can_add_criteria %}
+                <form id="form_add_criterion" action="{% url 'products:add_criterion' task_id %}" method="post">
+                    {% csrf_token %}
+                    <div class="input-group">
+                        <textarea name="criterion-NONE-name" cols="40" rows="2" class="form-control" placeholder="Введите критерий"></textarea>
+                        <input type="number" name="criterion-NONE-value" class="form-control" placeholder="Введите вероятность" step="0.01" value="0"/>
+                        <button name="submit-add-criterion" type="submit" class="btn btn-outline-success" style="width:30%">Добавить</button>
+                    </div>
+                </form>
+                {% endif %}
+            </div>
+            <div class="col-8">
+                {% for item, criterion in cells.items %}
+                <form id="form_delete_item" action="{% url 'products:update_item' item.id %}" method="post">
+                    {% csrf_token %}
+                    <div class="input-group">
+                        <textarea id="item_{{ item.id }}_name" name="object-item-{{ item.id }}-name" cols="40" rows="2" class="form-control" placeholder="Введите вариант" style="width:10%" onchange="UpdateData(this)">{{ item.name }}</textarea>
+                        {% for criterion, cell in criterion.items %}
+                        <input id="cell_{{ item.id }}_value" type="number" name="object-cell-{{ cell.id }}-value" class="form-control" step="0.001" value="{{cell.value}}" onchange="UpdateData(this)"/>
+                        {% endfor %}
+                        <button id="button_execute_{{ item.id }}" name="submit-delete-item" type="submit" class="btn btn-outline-danger" style="width:15%">Удалить</button>
+                    </div>
+                </form>
+                {% endfor %}
+                {% if can_add_items %}
+                <form id="form_add_item" action="{% url 'products:add_item' task_id %}" method="post">
+                    {% csrf_token %}
+                    <div class="input-group">
+                        <textarea name="item-NONE-name" cols="40" rows="2" class="form-control" placeholder="Введите вариант" style="width:10%"></textarea>
+                        {% for criterion in criteria %}
+                        <input type="number" name="cells-{{ criterion.id }}-value" class="form-control" step="0.001" value="0.0"/>
+                        {% endfor %}
+                        <button name="submit-add-item" type="submit" class="btn btn-outline-success" style="width:15%">Добавить</button>
+                    </div>
+                </form>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row mb-3">
+    <div class="col">
+        <div class="card rounded">
+            <div class="card-header">
+                <div class="row">
+                    <div class="clearfix">
+                        <a href="{% url 'products:execute' task_id %}" type="button" class="btn btn-outline-info float-end">Рассчитать</a>
+                    </div>
+                </div>
+            </div>
+            {% if task_result.items %}
+            <table class="table table-hover">
+                <thead>
+                </thead>
+                <tbody>
+                {% for criteria_name, item_name in task_result.items %}
+                <tr>
+                    <td>{{ criteria_name }}</td>
+                    <td>{{ item_name }}</td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            {% endif %}
+        </div>
+    </div>
+</div>
+<div class="row mb-3">
+    <div class="col">
+        <div class="accordion" id="accordionFlushExample">
+            {% for method in task.methods.all %}
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="flush-headingOne">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse{{ method.id }}" aria-expanded="false" aria-controls="flush-collapse{{ method.id }}">
+                        {{ method.name }}
+                    </button>
+                </h2>
+                <div id="flush-collapse{{ method.id }}" class="accordion-collapse collapse" aria-labelledby="flush-heading{{ method.id }}" data-bs-parent="#accordionFlushExample">
+                    <div class="accordion-body">{{  method.description | safe }}</div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+<script>
+$(document).ready(function () {
+    $('.add-criteria').click(function (ev) {
+        ev.preventDefault();
+        var count = $('#item-criteria').children().length;
+        var tmplMarkup = $('#criteria-template').html();
+        var compiledTmpl = tmplMarkup.replace(/__prefix__/g, count);
+        $('#item-criteria').append(compiledTmpl);
+        $('#id_criteria-TOTAL_FORMS').attr('value', count + 1);
+    });
+});
+$(document).ready(function () {
+    $('.add-items').click(function (ev) {
+        ev.preventDefault();
+        var count = $('#item-items').children().length;
+        var tmplMarkup = $('#items-template').html();
+        var compiledTmpl = tmplMarkup.replace(/__prefix__/g, count);
+        $('#item-items').append(compiledTmpl);
+        $('#id_items-TOTAL_FORMS').attr('value', count + 1);
+    });
+});
+function UpdateData(obj) {
+
+    console.log('obj=', obj);
+    console.log('obj.value=',obj.value);
+
+    var value = obj.value;
+
+    splitted = obj.id.split('_');
+    type = splitted[0];
+    id = splitted[1];
+
+    console.log('splitted=',splitted);
+    console.log('type=',type);
+    console.log('id=',id);
+
+    var button_execute = document.getElementById('button_execute_'+id);
+    console.log('button_execute=',button_execute);
+
+    id = 'button_execute_'+id;
+
+<!--    button_execute.name = 'submit-update-'+type;-->
+    button_execute.name = 'submit-update';
+    button_execute.class = 'btn btn-warning';
+
+    document.getElementById(id).textContent="Обновить";
+    document.getElementById(id).classList.remove('btn-outline-danger');
+    document.getElementById(id).classList.add('btn-warning');
+
+    console.log(button_execute);
+
+    <!--button_delete.style.display = 'none'; //or-->
+    <!--button_delete.style.visibility = 'hidden';-->
+    <!--button_delete.style.display = '';-->
+    <!--button_delete.style.visibility = 'true';-->
+
+    <!--button_update.style.display = 'initial';-->
+    <!--button_delete.style.display = 'none';-->
+
+    <!--varx_ip = document.getElementById("Choose").value;-->
+    <!--document.getElementById("demo1").innerHTML = "Select from the given fruit list " + x_ip;-->
+}
+</script>
+{% endblock content %}
