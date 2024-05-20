@@ -21,7 +21,7 @@ class ParamAUXInLine(admin.StackedInline):
 
 class TaskAdmin(admin.ModelAdmin):
     fieldsets = [
-        (None, {'fields': ['user', 'name', 'methods']}),
+        (None, {'fields': ['user', 'name', 'methods', 'enable_normalization','use_normalized']}),
     ]
 
     inlines = [ItemInline, ParamAUXInLine]
@@ -56,7 +56,7 @@ class ItemAdmin(admin.ModelAdmin):
 
 class CriterionAdmin(admin.ModelAdmin):
     fieldsets = [
-        (None, {'fields': ['task', 'name', 'name_short', 'value', 'direction', 'direction_bool']}),
+        (None, {'fields': ['task', 'name', 'name_short', 'value', 'direction_bool','normalize_param_p','normalize_param_k']}),
     ]
     list_display = ('id', 'task', 'name', 'name_short')
 

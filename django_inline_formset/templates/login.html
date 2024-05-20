@@ -23,7 +23,6 @@
         -ms-user-select: none;
         user-select: none;
       }
-
       @media (min-width: 768px) {
         .bd-placeholder-img-lg {
           font-size: 3.5rem;
@@ -39,10 +38,10 @@
     {% csrf_token %}
     <!--  <img class="mb-4" src="https://getbootstrap.com/docs/4.3/assets/brand/bootstrap-solid.svg" alt="" width="72" height="72">-->
     <!--  <h1 class="h3 mb-3 font-weight-normal">Пожалуйста авторизуйтесь</h1>-->
-    <label for="inputEmail" class="sr-only">Имя пользователя</label>
-    <input type="email" id="inputEmail" class="form-control" placeholder="Имя пользователя">
-    <label for="inputPassword" class="sr-only">Пароль</label>
-    <input type="password" id="inputPassword" class="form-control" placeholder="Пароль">
+<!--    <label for="inputEmail" class="sr-only">Имя пользователя</label>-->
+    <input type="text" id="inputEmail" class="form-control" placeholder="Имя пользователя" name="login">
+<!--    <label for="inputPassword" class="sr-only">Пароль</label>-->
+    <input type="password" id="inputPassword" class="form-control" placeholder="Пароль" name="password">
     <button class="btn btn-lg btn-primary btn-block" type="submit">Войти</button>
     <!--  <p class="mt-5 mb-3 text-muted">&copy; 2024</p>-->
 </form>

@@ -55,6 +55,15 @@
                                 </svg>
                                 Выход
                             </a>
+
+                            <form action="{% url 'logout' %}" method="post">
+                                {% csrf_token %}
+
+
+                                <button type="submit" class="nav-link d-flex align-items-center gap-2"><svg class="bi">
+                                    <use xlink:href="#door-closed"></use>
+                                </svg>Выход</button>
+                            </form>
                         </li>
                     </ul>
                 </div>

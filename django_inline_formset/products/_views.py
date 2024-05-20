@@ -177,3 +177,34 @@ def update_criterion(request, pk):
 <!--                                                />{{criterion.direction_bool}} {{ criterion.direction_bool }}-->
 
 '''
+
+'''
+        # for criterion_i in criteria:
+        #     if criterion_i not in cells_descartes_criteria.keys():
+        #         cells_descartes_criteria[criterion_i] = dict()
+        #     for criterion_j in criteria:
+        #         try:
+        #             cell = CellDescartesCriterion.objects.get(task=task, type='criterion', id_i=criterion_i.id, id_j=criterion_j.id)
+        #         except CellDescartesCriterion.DoesNotExist:
+        #             cell = CellDescartesCriterion.objects.create(task=task, type='criterion', id_i=criterion_i.id, id_j=criterion_j.id, value=0)
+        #         cells_descartes_criteria[criterion_i][criterion_j] = cell
+        # cells_descartes_items = dict()
+        # criteria = Criterion.objects.filter(task=task)
+        # for criterion in criteria:
+        #     if criterion not in cells_descartes_items.keys():
+        #         cells_descartes_items[criterion] = dict()
+        #     cells_descartes_items_inner = dict()
+        #     for item_i in items:
+        #         if item_i not in cells_descartes_items_inner.keys():
+        #             cells_descartes_items_inner[item_i] = dict()
+        #         for item_j in items:
+        #             try:
+        #                 cell = CellDescartesItem.objects.get(task=task, criterion=criterion, id_i=item_i.id, id_j=item_j.id)
+        #             except CellDescartesItem.DoesNotExist:
+        #                 cell = CellDescartesItem.objects.create(task=task, criterion=criterion, id_i=item_i.id, id_j=item_j.id, value=0)
+        #             cells_descartes_items_inner[item_i][item_j] = cell
+        #     cells_descartes_items[criterion] = cells_descartes_items_inner
+        # ctx['cells_descartes_items'] = cells_descartes_items
+        #
+
+'''

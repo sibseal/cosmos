@@ -33,6 +33,8 @@ class Task(models.Model):
     methods = models.ManyToManyField(Method)
     aux_params = models.JSONField(default=dict, blank=True)
     changed = models.BooleanField(default=False)
+    enable_normalization = models.BooleanField(default=False)
+    use_normalized = models.BooleanField(default=False)
     def __str__(self):
         return self.name
 
@@ -51,9 +53,10 @@ class Criterion(models.Model):
     name = models.CharField(max_length=100)
     name_short = models.CharField(max_length=5, blank=False)
     value = models.FloatField()
-    direction = models.IntegerField()
     direction_bool = models.BooleanField(default=False)
     changed = models.BooleanField(default=False)
+    normalize_param_p = models.FloatField(default=0)
+    normalize_param_k = models.FloatField(default=0)
 
     def __str__(self):
         return self.name
@@ -64,6 +67,7 @@ class Cell(models.Model):
     item = models.ForeignKey(Item, on_delete=models.CASCADE)
     criterion = models.ForeignKey(Criterion, on_delete=models.CASCADE)
     value = models.FloatField()
+    value_normalized = models.FloatField()
     changed = models.BooleanField(default=False)
 
     def __str__(self):
