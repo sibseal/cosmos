@@ -1,7 +1,6 @@
 {% extends "main.html" %}
 {% block content %}
 
-<div class="col-md-3"><button class="btn btn-block" >Show Details</button></div>
 <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -155,7 +154,7 @@
                             <tr>
                                 <td>
                                     <div class="input-group flex-nowrap">
-                                        <span class="input-group-text w-25">Использовать нормализацию</span>
+                                        <span class="input-group-text w-25">Нормализация</span>
                                         <div class="d-flex justify-content-center form-control input-group-text">
                                         <input type="hidden" name="object-task-{{ task.id }}-use_normalized" value='False'/>
                                         <input type="checkbox" role="switch"
