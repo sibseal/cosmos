@@ -250,7 +250,6 @@ class TaskUpdate(TaskInline, UpdateView):
                     #
                     cells_descartes_items_inner[item_i][item_j] = CellDescartesItem.objects.get(task=task, criterion=criterion, id_i=item_i.id, id_j=item_j.id)
             cells_descartes_items[criterion] = cells_descartes_items_inner
-
         show_criterion_weight = False
         show_criterion_direction = False
         show_need_descartes_criterion = False
@@ -260,14 +259,16 @@ class TaskUpdate(TaskInline, UpdateView):
             show_criterion_direction += method.need_criterion_direction
             show_need_descartes_criterion += method.need_descartes_criterion
             show_need_descartes_item += method.need_descartes_item
+        criteria_sum_weight = Decimal(0)
+        criteria_sum_weight_rounded = 0
+        for method in task.methods.all():
             if method.need_criterion_weight:
-                criteria_sum_weight = Decimal(0)
                 for criterion in criteria:
                     criteria_sum_weight += Decimal(criterion.value)
                 criteria_sum_weight_rounded = round(criteria_sum_weight, 3)
                 if criteria_sum_weight_rounded != 1:
                     ctx['error_criteria_sum_weight'] = f'Сумма вероятностей {criteria_sum_weight_rounded} != 1'
-
+            break
         ctx['named_formsets'] = self.get_named_formsets()
         ctx['items'] = items
         ctx['criteria'] = criteria
