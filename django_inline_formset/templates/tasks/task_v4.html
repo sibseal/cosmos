@@ -244,14 +244,13 @@
                         {% endif %}
                         <!--                        PARAM AUX-->
 
-
+                        <!--                        ОЦЕНКИ-->
+                        {% if show_need_descartes_criterion or show_need_descartes_item %}
                         <div class="card rounded shadow">
                               <div class="card-header">
                                   Оценки
                               </div>
                             <div class="card-body">
-                                <!--                        ОЦЕНКИ-->
-                                {% if show_need_descartes_criterion or show_need_descartes_item %}
                                 <table class="table table-borderless">
                                     {% if show_need_descartes_criterion %}
                                     {% if criteria %}
@@ -301,7 +300,6 @@
                                                        id="object-descartes_item-{{ item_i.id }}-value" type="number" name="object-descartes_item-{{ cell.id }}-value"
                                                        class="form-control {% if cell.changed %}text-warning{% endif %}"
                                                        min="1" max="9" step='1' value="{{cell.value}}" onchange="this.form.submit()"/>
-
                                                 {% endfor %}
                                             </div>
                                             {% endfor %}
@@ -317,10 +315,11 @@
                                     {% endif %}
                                     {% endif %}
                                 </table>
-                                {% endif %}
-                                <!--                        ОЦЕНКИ-->
+
                             </div>
                         </div>
+                        {% endif %}
+                        <!--                        ОЦЕНКИ-->
                     </form>
                 </div>
                 {% if task_result.items %}
