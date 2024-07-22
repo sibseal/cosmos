@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'products',
     'theme',
+    'ckeditor',
 ]
 INTERNAL_IPS = [
     "127.0.0.1",
@@ -123,3 +124,14 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 LOGIN_REDIRECT_URL = "/"  # new
 LOGOUT_REDIRECT_URL = "/"  # new
+CKEDITOR_CONFIGS = {
+    'default': {
+        'toolbar': 'full',
+        'extraPlugins': ','.join(
+            [
+               'eqneditor',
+                'dialog',
+            ]
+        ),
+    },
+}

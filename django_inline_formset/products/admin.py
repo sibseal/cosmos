@@ -65,7 +65,17 @@ class ChoiceAdmin(admin.ModelAdmin):
     list_display = ('id', 'question', 'choice_text', 'next_question')
 
 
+from django import forms
+from django.contrib import admin
+from ckeditor.widgets import CKEditorWidget
+class MethodAdminForm(forms.ModelForm):
+    content = forms.CharField(widget=CKEditorWidget())
+    class Meta:
+        model = Method
+        fields = '__all__'
+
 class MethodAdmin(admin.ModelAdmin):
+    # form = MethodAdminForm
     list_display = ('id', 'name_short', 'name')
 
 

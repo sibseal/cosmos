@@ -13,13 +13,18 @@
                         <div class="form-check">
                             <input class="form-check-input" type="checkbox" name="method" id="method_{{ method.id }}" value="{{ method.id }}">
                             <label class="form-check-label" for="method_{{ method.id }}">{{ method.name }}</label>
+                            {% if method.content %}
                             <i type="button" class="bi bi-question-circle" data-bs-toggle="modal" data-bs-target="#exampleModal_{{method.id}}"></i>
+                            {% endif %}
                         </div>
                         <div class="modal fade" id="exampleModal_{{method.id}}" tabindex="-1" aria-labelledby="exampleModalLabel_{{method.id}}" aria-hidden="true">
                             <div class="modal-dialog modal-lg modal-dialog-scrollable">
                                 <div class="modal-content">
                                     <div class="modal-body">
-                                        <img src="/media/{{ method.image }}" class="img-fluid" alt="/media/{{ method.image }}">
+<!--                                        <img src="/media/{{ method.image }}" class="img-fluid" alt="/media/{{ method.image }}">-->
+                                        {% autoescape off %}
+                                        {{method.content}}
+                                        {% endautoescape %}
                                     </div>
                                 </div>
                             </div>

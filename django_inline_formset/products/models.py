@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 from django.db import models
-
+from ckeditor.fields import RichTextField
 
 class Param(models.Model):
     name = models.CharField(max_length=8)
@@ -9,7 +9,6 @@ class Param(models.Model):
 
     def __str__(self):
         return f'{self.name} - {self.description}'
-
 
 class Method(models.Model):
     name = models.CharField(max_length=64)
@@ -21,6 +20,7 @@ class Method(models.Model):
     need_descartes_item = models.BooleanField(default=False)
     params = models.ManyToManyField(Param, blank=True)
     image = models.ImageField(upload_to='images', blank=True)
+    content = RichTextField(blank=True)
 
     def __str__(self):
         return self.name_short
