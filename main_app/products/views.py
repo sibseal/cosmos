@@ -32,16 +32,13 @@ types = {
 def user_login(request):
     if request.method == 'POST':
         form = LoginForm(request.POST)
-        print(form)
         if form.is_valid():
             cd = form.cleaned_data
-            print(cd)
             user = authenticate(username=cd['username'], password=cd['password'])
             if user is not None:
                 if user.is_active:
                     login(request, user)
                     return redirect('products:list_tasks')
-                    # return HttpResponse('Authenticated successfully')
                 else:
                     return HttpResponse('Disabled account')
             else:
